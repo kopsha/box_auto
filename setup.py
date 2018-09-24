@@ -5,7 +5,7 @@ with open("readme.md", "r") as file_handle:
 
 setuptools.setup(
     name="box_auto",
-    version="0.0.1",
+    version="0.0.5",
     author="Florin Ciurcanu",
     author_email="florin.ciurcanu@gmail.com",
     description="BoxCore communication API",
