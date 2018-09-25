@@ -5,10 +5,10 @@ with open("readme.md", "r") as file_handle:
 
 setuptools.setup(
     name="box_auto",
-    version="0.0.5",
+    version="0.0.6",
     author="Florin Ciurcanu",
     author_email="florin.ciurcanu@gmail.com",
-    description="BoxCore communication API",
+    description="BoxIO communication API",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/kopsha/box_auto",
