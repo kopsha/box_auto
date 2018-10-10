@@ -20,23 +20,19 @@ class AccelerationFixture(unittest.TestCase):
     def test_steady_acceleration(self):
         top_speed = 25
         for sim_speed in range(top_speed):
-            can_frame = {
-                'speed' : sim_speed
-            }
+            can_frame = { 'speed': sim_speed }
             # box_auto.send_can_frame(frame=can_frame)
             sleep(0.04)      # 40ms
-            actual_speed = can_frame.get('speed') # instead of box_auto.get_frame().get('speed')
+            actual_speed = can_frame.get('speed', -1) # instead of box_auto.get_frame().get('speed')
             self.assertEqual( sim_speed, actual_speed )
 
     def test_steady_breaking(self):
         top_speed = 25
         for sim_speed in reversed(range(top_speed)):
-            can_frame = {
-                'speed' : sim_speed
-            }
+            can_frame = { 'speed': sim_speed }
             # box_auto.send_can_frame(frame=can_frame)
             sleep(0.04)      # 40ms
-            actual_speed = can_frame.get('speed') # instead of box_auto.get_frame().get('speed')
+            actual_speed = can_frame.get('speed', -1) # instead of box_auto.get_frame().get('speed')
             self.assertEqual( sim_speed, actual_speed )
 
 
