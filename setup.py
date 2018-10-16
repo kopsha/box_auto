@@ -5,7 +5,7 @@ with open("readme.md", "r") as file_handle:
 
 setuptools.setup(
     name="box_auto",
-    version="0.0.6",
+    version="0.0.9",
     author="Florin Ciurcanu",
     author_email="florin.ciurcanu@gmail.com",
     description="BoxIO communication API",
@@ -14,6 +14,7 @@ setuptools.setup(
     url="https://github.com/kopsha/box_auto",
     packages=setuptools.find_packages(),
     classifiers=[
+        "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 2",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Operating System :: OS Independent",
