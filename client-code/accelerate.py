@@ -12,16 +12,16 @@ from serial.tools import list_ports
 from box_auto import CoreDevice
 
 class AccelerationFixture(unittest.TestCase):
-    """Acceleration from 0 to 25 kmh test suite"""
+    """Acceleration and breaking test suite"""
 
     def setUp(self):
-        self.assertTrue('box_auto' in sys.modules)
+        self.assertTrue('box_auto' in sys.modules)      # import was successful
 
-        serial_devices = list(list_ports.grep('0403:6001'))
+        serial_devices = list(list_ports.grep('0403:6001'))     # search a box core device
         self.assertTrue(serial_devices)
         port = Serial(serial_devices[0].device, baudrate=115200, timeout=0.2) # always pick first device
-        self.box = CoreDevice(serialPort=port)
 
+        self.box = CoreDevice(serialPort=port)
         self.assertTrue( self.box.open_connection() )
 
     def tearDown(self):
@@ -37,10 +37,6 @@ class AccelerationFixture(unittest.TestCase):
             self.assertTrue(was_ok)
 
             sleep(0.04)      # 40ms
-
-            # self.assertEqual( can_id, msg.get('can_id') )
-            # actual_speed = unpack('B', msg.get('can_data', 0xff))[0]
-            # self.assertEqual( sim_speed, actual_speed )
 
     def test_steady_breaking(self):
         top_speed = 25
