@@ -27,6 +27,19 @@ class AccelerationFixture(unittest.TestCase):
     def tearDown(self):
         self.assertTrue( self.box.close_connection() )
 
+    def test_firmware_version(self):
+        firmware_response = self.box.get_firmware_version()
+        self.assertEqual( firmware_response.typeIntf, 0x64 )
+        self.assertEqual( firmware_response.response_id, 0x04 )
+        self.assertTrue( firmware_response.payload )    # a.k.a. not-empty
+
+    def test_hardware_version(self):
+        hardware_response = self.box.get_hardware_version()
+        self.assertEqual( hardware_response.typeIntf, 0x64 )
+        self.assertEqual( hardware_response.response_id, 0x05 )
+        self.assertTrue( hardware_response.payload )    # a.k.a. not-empty
+
+
     def test_steady_acceleration(self):
         top_speed = 25
         for sim_speed in range(top_speed):
