@@ -4,7 +4,9 @@ import sys
 from struct import pack
 from struct import unpack
 
+from time import time
 from time import sleep
+from sched import scheduler
 
 from serial import Serial
 from serial.tools import list_ports
@@ -39,7 +41,6 @@ class AccelerationFixture(unittest.TestCase):
         self.assertEqual( hardware_response.response_id, 0x05 )
         self.assertTrue( hardware_response.payload )    # a.k.a. not-empty
 
-
     def test_steady_acceleration(self):
         top_speed = 25
         for sim_speed in range(top_speed):
@@ -48,10 +49,9 @@ class AccelerationFixture(unittest.TestCase):
             msg_data = self.box.make_can_message(can_id, can_data)
             was_ok = self.box.send_message(msg_data)
             self.assertTrue(was_ok)
-
             sleep(0.04)      # 40ms
 
-    def test_steady_breaking(self):
+    def test_supportlevels_steady_breaking(self):
         top_speed = 25
         for sim_speed in reversed(range(top_speed)):
             can_id = 0x403          # assumption this is the speed can id
@@ -59,8 +59,17 @@ class AccelerationFixture(unittest.TestCase):
             msg_data = self.box.make_can_message(can_id, can_data)
             was_ok = self.box.send_message(msg_data)
             self.assertTrue(was_ok)
-
             sleep(0.04)      # 40ms
+
+    def test_expect_gpio_event(self):
+        def check_event_queue(box):
+            messages = self.box.read_all_messages()
+            #self.assertTrue( messages )    # example code no actual testing
+
+        boss = scheduler(time, sleep)
+        howLong = 1
+        boss.enter(delay=howLong, priority=3, action=check_event_queue, argument=(self.box,))
+        boss.run()
 
 def main():
     # start the bloody tests
