@@ -6,7 +6,10 @@ from collections import namedtuple
 
 from serial import Serial
 from serial.tools import list_ports
+
+from time import time
 from time import sleep
+from sched import scheduler
 
 class CoreDevice(object):
     """BoxIO CoreDevice interface"""
@@ -122,6 +125,22 @@ class CoreDevice(object):
                 raise ValueError
 
         return all_messages
+
+    def expect_gpio_event(self, waitFor, canIdMask):
+        # this implementation bloks for that period, no matter how soon that event arrived
+        sleep(waitFor)
+
+        gpio_events = [ev for ev in self.read_all_messages() if ev.typeIntf == 0x03]
+        selected_events = [ev for ev in gpio_events if ev.port & portMask]
+        return selected_events
+
+    def expect_can_event(self, waitFor, portMask):
+        # this implementation bloks for that period, no matter how soon that event arrived
+        sleep(waitFor)
+
+        gpio_events = [ev for ev in self.read_all_messages() if ev.typeIntf == 0x23]
+        selected_events = [ev for ev in gpio_events if ev.can_id & canIdMask]
+        return selected_events
 
 
 def main():
