@@ -62,14 +62,21 @@ class AccelerationFixture(unittest.TestCase):
             sleep(0.04)      # 40ms
 
     def test_expect_gpio_event(self):
-        def check_event_queue(box):
-            messages = self.box.read_all_messages()
-            #self.assertTrue( messages )    # example code no actual testing
+        # this test will fail without being connected to something
+        bit_mask = 0x01 << 3
+        events = self.box.expect_gpio_event(waitFor=0.5, portMask=bit_mask)       # wait 0.5 seconds
+        #self.assertTrue(events) assertion disabled
+        for i, ev in enumerate(events):
+            print('{}. {}'.format(i,ev))
 
-        boss = scheduler(time, sleep)
-        howLong = 1
-        boss.enter(delay=howLong, priority=3, action=check_event_queue, argument=(self.box,))
-        boss.run()
+    def test_expect_can_event(self):
+        # this test will fail without being connected to something
+        bit_mask = 0x0a03
+        events = self.box.expect_can_event(waitFor=0.5, canIdMask=bit_mask)       # wait 0.5 seconds
+        #self.assertTrue(events) assertion disabled
+        for i, ev in enumerate(events):
+            print('{}. {}'.format(i,ev))
+
 
 def main():
     # start the bloody tests

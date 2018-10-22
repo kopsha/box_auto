@@ -126,7 +126,7 @@ class CoreDevice(object):
 
         return all_messages
 
-    def expect_gpio_event(self, waitFor, canIdMask):
+    def expect_gpio_event(self, waitFor, portMask):
         # this implementation bloks for that period, no matter how soon that event arrived
         sleep(waitFor)
 
@@ -134,7 +134,7 @@ class CoreDevice(object):
         selected_events = [ev for ev in gpio_events if ev.port & portMask]
         return selected_events
 
-    def expect_can_event(self, waitFor, portMask):
+    def expect_can_event(self, waitFor,  canIdMask):
         # this implementation bloks for that period, no matter how soon that event arrived
         sleep(waitFor)
 
