@@ -5,7 +5,7 @@ with open("readme.md", "r") as file_handle:
 
 setuptools.setup(
     name="box_auto",
-    version="0.0.9",
+    version="0.0.10",
     author="Florin Ciurcanu",
     author_email="florin.ciurcanu@gmail.com",
     description="BoxIO communication API",

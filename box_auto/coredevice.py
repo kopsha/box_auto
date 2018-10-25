@@ -14,10 +14,11 @@ from sched import scheduler
 class CoreDevice(object):
     """BoxIO CoreDevice interface"""
     Request =     namedtuple('Request',     ['length', 'typeIntf', 'payload'])
-    Response =    namedtuple('Response',    ['length', 'typeIntf', 'response_id', 'payload'])
-    GpioEvent =   namedtuple('GpioEvent',   ['length', 'typeIntf', 'timestamp', 'port'])
     CanRequest =  namedtuple('CanRequest',  ['length', 'typeIntf', 'can_id', 'can_dlc', 'can_data'])
+    Response =    namedtuple('Response',    ['length', 'typeIntf', 'timestamp', 'response_id', 'payload'])
+    GpioEvent =   namedtuple('GpioEvent',   ['length', 'typeIntf', 'timestamp', 'port'])
     CanEvent =    namedtuple('CanEvent',    ['length', 'typeIntf', 'timestamp', 'can_id', 'can_dlc', 'can_data'])
+    ResponseFormat = '<BBIB{}s'
     GpioEventFormat  = '<BBIH'
     CanRequestFormat = '<BBIB{dlc}s'
     CanEventFormat   = '<BBIIB{dlc}s'
@@ -48,10 +49,9 @@ class CoreDevice(object):
         receive_buffer = bytearray(64)
         size = self.serial_port.readinto(receive_buffer)
         response_data = receive_buffer[:size]
-        Response = namedtuple('Response', ['length', 'typeIntf', 'response_id', 'payload'])
 
-        response_fmt = '<BBB{}s'.format(response_data[0]-3)
-        response = CoreDevice.Response( *struct.unpack(response_fmt, response_data) )
+        fmt = CoreDevice.ResponseFormat.format(response_data[0]-7)
+        response = CoreDevice.Response( *struct.unpack(fmt, response_data) )
 
         return response
 
@@ -65,8 +65,8 @@ class CoreDevice(object):
         size = self.serial_port.readinto(receive_buffer)
         response_data = receive_buffer[:size]
 
-        response_fmt = '<BBB{}s'.format(response_data[0]-3)
-        response = CoreDevice.Response( *struct.unpack(response_fmt, response_data) )
+        fmt = CoreDevice.ResponseFormat.format(response_data[0]-7)
+        response = CoreDevice.Response( *struct.unpack(fmt, response_data) )
 
         return response
 
