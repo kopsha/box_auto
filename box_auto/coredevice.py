@@ -18,10 +18,10 @@ class CoreDevice(object):
     Response =    namedtuple('Response',    ['length', 'typeIntf', 'timestamp', 'response_id', 'payload'])
     GpioEvent =   namedtuple('GpioEvent',   ['length', 'typeIntf', 'timestamp', 'port'])
     CanEvent =    namedtuple('CanEvent',    ['length', 'typeIntf', 'timestamp', 'can_id', 'can_dlc', 'can_data'])
-    ResponseFormat = '<BBIB{}s'
-    GpioEventFormat  = '<BBIH'
-    CanRequestFormat = '<BBIB{dlc}s'
-    CanEventFormat   = '<BBIIB{dlc}s'
+    ResponseFormat = '>BBIB{}s'
+    GpioEventFormat  = '>BBIH'
+    CanRequestFormat = '>BBIB{can_dlc}s'
+    CanEventFormat   = '>BBIIB{can_dlc}s'
 
     def __init__(self, serialPort):
         self.serial_port = serialPort
@@ -42,7 +42,7 @@ class CoreDevice(object):
 
     def get_firmware_version(self):
         firmware_rq = CoreDevice.Request( 3, 0x62, 0x04 )
-        rq_data = struct.pack('<BBB', *firmware_rq)
+        rq_data = struct.pack('>BBB', *firmware_rq)
         self.serial_port.write( rq_data )
         self.serial_port.flush()
 
@@ -57,7 +57,7 @@ class CoreDevice(object):
 
     def get_hardware_version(self):
         hardware_rq = CoreDevice.Request( 3, 0x62, 0x05 )
-        rq_data = struct.pack('<BBB', *hardware_rq)
+        rq_data = struct.pack('>BBB', *hardware_rq)
         self.serial_port.write( rq_data )
         self.serial_port.flush()
 
@@ -73,7 +73,7 @@ class CoreDevice(object):
     def make_can_message(self, can_id, can_data):
         mTypeIntf = (0x2 << 4) | 0x0
         mLen = 2 + 4 + len(can_data)
-        box_can_format = '<BBLB{}s'.format(len(can_data))
+        box_can_format = CoreDevice.CanRequestFormat.format(can_dlc=len(can_data))
         data = struct.pack(box_can_format, mLen, mTypeIntf, can_id, len(can_data), can_data)
         return data
 
@@ -87,7 +87,7 @@ class CoreDevice(object):
         return CoreDevice.GpioEvent(*unpkd)
 
     def make_can_event(msg_data):
-        fmt = CoreDevice.CanEventFormat.format(dlc=len(msg_data)-(8+3))
+        fmt = CoreDevice.CanEventFormat.format(can_dlc=len(msg_data)-(8+3))
         unpkd = struct.unpack(fmt, msg_data)
         return CoreDevice.CanEvent(*unpkd)
 
