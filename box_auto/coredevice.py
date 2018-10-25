@@ -80,7 +80,7 @@ class CoreDevice(object):
     def make_can_request(self, can_id, can_data):
         msgLen = 2 + 4 + len(can_data)
         msgTypeIntf = (0x2 << 4) | 0x0          # high nible: interface, low nible: type
-        return CanRequest(msgLen, msgTypeIntf, can_id, len(can_data), can_data)
+        return CoreDevice.CanRequest(msgLen, msgTypeIntf, can_id, len(can_data), can_data)
 
     def make_gpio_event(msg_data):
         unpkd = struct.unpack(CoreDevice.GpioEventFormat, msg_data)
